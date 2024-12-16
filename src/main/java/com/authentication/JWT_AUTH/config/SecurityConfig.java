@@ -22,14 +22,13 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("Inside *********************");
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless JWT-based authentication
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/api/login", "/auth/api/refresh").permitAll()
                         .requestMatchers("/api/users/**", "/apps/**").hasAuthority("ADMIN")
-                        .anyRequest().authenticated() // All other requests must be authenticated
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter before authentication filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
