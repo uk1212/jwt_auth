@@ -11,8 +11,8 @@ import java.util.Date;
 public class JwtUtil {
 
 
-    private String secret = "soemthingagae";
-    private long expiration = 5*60*1000;
+    private String secret = "DfNn6AmsV7T8Iu5h6z7NDEY4/oVVnXLERF219qzZa5OldoYp3UnWT95b0HeWG1dY";
+    private long expiration = 60*1000;
 
     public String generateAccessToken(String username) {
         return Jwts.builder()
@@ -26,7 +26,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 35*60*1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 60*1000))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

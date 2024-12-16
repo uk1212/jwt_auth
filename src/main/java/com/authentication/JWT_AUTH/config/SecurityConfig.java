@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,11 +20,10 @@ public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("Inside *********************");
-        http.csrf(csrf->disable()) // Disable CSRF for stateless JWT-based authentication
+        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless JWT-based authentication
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/api/login", "/auth/api/refresh").permitAll()
                         .requestMatchers("/api/users/**", "/apps/**").hasAuthority("ADMIN")

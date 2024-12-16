@@ -13,7 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth/api")
 public class AuthController {
 
     @Autowired
@@ -22,13 +22,14 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("api/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request, HttpServletResponse response) {
         System.out.println("Hello");
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         }catch(Exception e){
+            System.out.println("NOT authenticated!!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
@@ -43,7 +44,12 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(accessToken));
     }
 
-    @PostMapping("api/refresh")
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied: " + e.getMessage());
+    }
+
+    @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken, @RequestBody AuthRequest request, HttpServletResponse response ){
         if (jwtUtil.validateToken(refreshToken)) {
             String accessToken = jwtUtil.generateAccessToken(request.getUsername());
